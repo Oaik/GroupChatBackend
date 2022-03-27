@@ -9,9 +9,11 @@ from .models import RoomMember
 from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.auth.views import LoginView
+from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView, FormView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
@@ -63,8 +65,14 @@ def getToken (request) :
     return JsonResponse({'token' : token, 'uid' : uid}, safe=False)
 
 def lobby (request) :
+    if not request.user.is_authenticated:
+        return render(request, 'base/login.html')
     return render(request, 'base/lobby.html')
+
+
 def room (request) :
+    if not request.user.is_authenticated:
+        return render(request, 'base/login.html')
     return render(request, 'base/room.html')
 
 @csrf_exempt
