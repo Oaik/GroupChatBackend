@@ -37,7 +37,7 @@ let joinAndDisplayLocalStream = async () => {
     let member = await createMember()
 
 
-    // add audio and video to the our browser
+    // add audio and video to our browser
     let player = `<div class="video-container" id="user-container-${UID}">
                     <div class="username-wrapper"><span class="user-name">${member.name}</span></div>
                     <div class="video-player" id="user-${UID}"></div>
