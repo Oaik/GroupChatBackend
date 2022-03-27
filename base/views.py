@@ -1,0 +1,77 @@
+from django.shortcuts import render
+from django.http import JsonResponse
+from agora_token_builder import RtcTokenBuilder
+import random
+import time
+import json
+from .models import RoomMember
+from django.views.decorators.csrf import csrf_exempt
+# Create your views here.
+
+def getToken (request) :
+    appId = '38e3a9c1018e4d6ca9b60f351d15c7c5'
+    appCertificate = '630d80cc553845b3b9c5f5b4f882466c'
+    # http: // 127.0.0.1: 8000 / get_token /?channel = room1
+    # channelName = room1
+    channelName = request.GET.get('channel')
+    # i need to generate random number for the user
+    uid = random.randint(1, 230)
+    expirationTimeInSeconds = 3600 * 24
+    currentTimeStamp = time.time()
+    privilegeExpiredTs = currentTimeStamp + expirationTimeInSeconds
+    # if role = 1 so it's a host
+    # if role = 2 so it's a guest
+    # anyway it's not a matter with authentication
+    # so i will leave it 1 for everybody
+    role = 1
+    token = RtcTokenBuilder.buildTokenWithUid(appId, appCertificate, channelName, uid, role, privilegeExpiredTs)
+    # JsonResponse is an HttpResponse subclass that helps to create a JSON-encoded response.
+    return JsonResponse({'token' : token, 'uid' : uid}, safe=False)
+
+def lobby (request) :
+    return render(request, 'base/lobby.html')
+def room (request) :
+    return render(request, 'base/room.html')
+
+@csrf_exempt
+def createMember (request) :
+    # get data from front-end then parse it by json
+    data = json.loads(request.body)
+    # i need to check if the member is exist before create it
+    # created will be boolean
+
+    member, created = RoomMember.objects.get_or_create(
+        name = data['name'],
+        uid = data['UID'],
+        room_name = data['room_name']
+    )
+    return JsonResponse({'name' : data['name']}, safe=False)
+
+def getMember (request) :
+    uid = request.GET.get('UID')
+    room_name = request.GET.get('room_name')
+
+    member = RoomMember.objects.get(
+        uid=uid,
+        room_name=room_name,
+    )
+
+    name = member.name
+    return JsonResponse({'name':member.name}, safe=False)
+
+
+@csrf_exempt
+def deleteMember (request) :
+    # get data from front-end then parse it by json
+    data = json.loads(request.body)
+
+    member = RoomMember.objects.get(
+        name=data['name'],
+        uid=data['UID'],
+        room_name=data['room_name'],
+    )
+
+    member.delete()
+
+    return JsonResponse('member was deleted', safe=False)
+

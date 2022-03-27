@@ -1,0 +1,4 @@
+to be able to generate tokens
+i need to install this agora package
+by this command " pip install agora-token-builder "
+then use it inside app views
