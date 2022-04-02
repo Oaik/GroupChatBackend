@@ -1,5 +1,11 @@
 {% extends 'base/main.html' %}
 {% load static %}
+{% block title %}
+<title>Room</title>
+{% endblock title %}
+{% block style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main.css' %}">
+{% endblock style %}
 {% block content %}
   <main>
     {# Room name #}

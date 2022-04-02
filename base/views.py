@@ -15,8 +15,69 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from base.models import Contact
+
 # Create your views here.
 
+# contact
+
+
+def index (request) :
+    contacts = Contact.objects.all()
+    search_input = request.GET.get('search-area')
+    if search_input :
+        contacts = Contact.objects.filter(full_name__startswith=search_input)
+    else :
+        contacts = Contact.objects.all()
+        search_input = ''
+    context = {'contacts' : contacts}
+    return render(request, 'base/index.html', context)
+
+def addContact (request) :
+    if request.method == 'POST' :
+        new_contact = Contact(
+            full_name =  request.POST['fullname'],
+            relationship = request.POST['relationship'],
+            email = request.POST['email'],
+            phone_number = request.POST['phone-number'],
+            address = request.POST['address']
+        )
+        new_contact.save()
+        return redirect('/contact-list/')
+    return render(request, 'base/new.html')
+
+def contactProfile (request, pk) :
+    contact = Contact.objects.get(id = pk)
+    context = {'contact' : contact}
+    return render(request, 'base/contact-profile.html', context)
+
+
+def editContact(request, pk):
+    contact = Contact.objects.get(id=pk)
+
+    if request.method == 'POST' :
+        contact.full_name = request.POST['fullname']
+        contact.relationship = request.POST['relationship']
+        contact.phone_number = request.POST['phone-number']
+        contact.email = request.POST['e-mail']
+        contact.address = request.POST['address']
+        contact.save()
+
+        return redirect('/profile/'+str(contact.id))
+    context = {'contact' : contact}
+    return render(request, 'base/edit.html', context)
+
+def deleteContact (request, pk) :
+    contact = Contact.objects.get(id=pk)
+    if request.method == 'POST' :
+        contact.delete()
+        return redirect('/contact-list/')
+    context = {'contact' : contact}
+    return render(request, 'base/delete.html', context)
+
+
+
+# user
 class CustomLoginView (LoginView) :
     template_name = 'base/login.html'
     fields = '__all__'

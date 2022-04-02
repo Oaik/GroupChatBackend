@@ -1,0 +1,53 @@
+{% extends 'base/main.html' %}
+{% load static %}
+{% block style %}
+ <link rel="stylesheet" type="text/css" href="{% static 'styles/style.css' %}">
+{% endblock style %}
+{% block title %}
+<title>Contact List</title>
+{% endblock %}
+{% block content %}
+
+	<div class="container">
+		<!--  SEARCH FORM -->
+		<header class="header">
+			<form action="/" method="GET" class="search-bar" id='search-form'>
+
+				<input type="search-name" class="contact-search" name="search-area" placeholder="Search"
+					value={{search_input}}>
+
+				<i onclick="document.getElementById('search-form').submit();" style="padding-left: 5px;"
+					class="fas fa-search"></i>
+
+			</form>
+
+			<!--  ADD-CONTACT BUTTON/ICON -->
+			<a href="{% url 'add-contact' %}"><i class="fas fa-plus-circle add"></i></a>
+		</header>
+
+		<!--  CONTACT LIST -->
+		<section class="contacts-library">
+			<ul class="contacts-list">
+				{% for contact in contacts reversed %}
+
+
+				<a href="{% url 'profile' contact.id %}">
+					<div class="contact-section">
+						<li class="list__item">
+							<p class="contact-name">{{ contact.full_name | title }}</p>
+							<p class="relationship">{{ contact.relationship | title }}</p>
+						</li>
+						<li class="list__item">
+							<i class="fas fa-phone"></i>
+							<i class="fas fa-sms text"></i>
+						</li>
+					</div>
+				</a>
+
+				<hr>
+
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+{% endblock content %}

@@ -15,6 +15,17 @@ class RoomMember (models.Model) :
         return self.name
 
 
+class Contact (models.Model) :
+    full_name = models.CharField(max_length=200)
+    relationship = models.CharField(max_length=200)
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=20)
+    address = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.full_name
+
+
 
 # 1 - create Database Model (RoomMember) | Store username, uid and room name
 # 2 - on join, create RoomMember in database

@@ -6,3 +6,11 @@ then use it inside app views
 to install crispy form " pip install django-crispy-forms "
 then add  'crispy_forms' to installed apps in settings
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+
+github command
+1. git add .
+2. git commit -m "added"
+3. git push
+4. git pull origin master

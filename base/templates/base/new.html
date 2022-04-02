@@ -1,0 +1,74 @@
+{% extends 'base/main.html' %}
+{% load static %}
+{% block style %}
+	<link rel="stylesheet" type="text/css" href="{% static 'styles/style-edit.css' %}">
+{% endblock %}
+{% block title %}
+  <title>Add contact</title>
+{% endblock %}
+{% block content %}
+	<div class='container'>
+		<header class="hero">
+
+			<a href="{% url 'index' %}">
+				<i class="fas fa-chevron-circle-left back-btn"></i>
+			</a>
+
+			<div class="hero-info">
+				<h1 class="name">New Contact</h1>
+			</div>
+		</header>
+
+		<form action="" method="POST">
+			{% csrf_token %}
+			<section class="contact-info">
+
+				<div class="info-line">
+					<i class="fas fa-phone icon-gradient"></i>
+					<input type="text" class="type" name="fullname" placeholder="Full Name">
+				</div>
+
+				<div class="info-line">
+					<i class="fas fa-user-circle icon-gradient"></i>
+					<input type="text" class="type" name="relationship" placeholder="Relationship">
+				</div>
+
+
+
+				<div class="info-line">
+					<i class="fas fa-sms icon-gradient"></i>
+					<input type="text" class="type" name="phone-number" placeholder="Phone Number">
+				</div>
+
+
+
+
+				<div class="info-line">
+					<i class="fas fa-map-marker-alt icon-gradient location"></i>
+					<input type="text" class="type" name="address" placeholder="Address">
+				</div>
+
+
+				<div class="info-line">
+					<i class="fas fa-envelope icon-gradient location"></i>
+					<input type="text" class="type" name="email" placeholder="Email">
+				</div>
+
+
+
+			</section>
+
+			<section class="button-container">
+
+
+				<div class="update-contact">
+					<i id="save" class="fas fa-check-circle icon-gradient"></i>
+					<button type="submit" class="button">Save Contact</button>
+				</div>
+			</section>
+
+
+		</form>
+	</div>
+
+{% endblock %}
