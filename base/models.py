@@ -21,6 +21,7 @@ class Contact (models.Model) :
     email = models.EmailField()
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=200)
+    userID = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=False)
 
     def __str__(self):
         return self.full_name
