@@ -29,10 +29,10 @@
       </div>
       <form id="form">
         <div class="form-field">
-          <input type="text" name="room" placeholder="Enter a room name." style="text-transform: uppercase">
+          <input type="text" name="room" value="{{ roomName }}"  placeholder="Enter a room name." style="text-transform: uppercase">
         </div>
         <div class="form-field">
-          <input type="text" name="username" placeholder="Enter your name." style="text-transform: uppercase">
+          <input type="text" name="username" value="{{ request.user.first_name }}" placeholder="Enter your name." style="text-transform: uppercase">
         </div>
         <div class="form-field">
           <input type="submit" value="join stream">

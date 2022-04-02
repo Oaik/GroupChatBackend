@@ -13,39 +13,14 @@
 			<a href="{% url 'index' %}">
 				<i  class="fas fa-chevron-circle-left back-btn"></i>
 			</a>
-			<div class="hero-info">
-				<h1 class="name">{{ contact.full_name | title }}</h1>
-				<p  class="relationship">{{ contact.relationship | title }}</p>
-			</div>
+      
 		</header>
 
 		<section class="contact-info">
-
-			<div class="info-line">
-				<i class="fas fa-phone icon-gradient"></i>
-				<p class="phone-number">{{ contact.phone_number }}</p>
-			</div>
-
-		
-
 			<div class="info-line">
 				<i class="fas fa-sms icon-gradient"></i>
 				<p class="sms">Send Message</p>
-			</div>
-
-			
-
-			<div class="info-line">
-				<i class="fas fa-envelope icon-gradient"></i>
-				<p class="email">{{ contact.email }}</p>
-			</div>
-
-			
-
-			<div class="info-line">
-				<i id="location" class="fas fa-map-marker-alt icon-gradient"></i>
-				<p class="address">{{ contact.address }}</p>
-			</div>
+			</div>      
 		</section>
 
 		<a href="{% url 'edit-contact' contact.id %}">

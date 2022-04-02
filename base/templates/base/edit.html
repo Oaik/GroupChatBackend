@@ -15,10 +15,6 @@
 			    <i class="fas fa-chevron-circle-left back-btn"></i>
 			</a>
 
-			<div class="hero-info">
-				<h1 class="name">{{ contact.full_name }}</h1>
-				<p class="relationship-hero">{{ contact.relationship }}</p>
-			</div>
 		</header>
 
     <form action="" method="POST">
@@ -27,34 +23,9 @@
 
         <div class="info-line">
           <i class="fas fa-phone icon-gradient"></i>
-          <input type="text" class="type" name="fullname" placeholder="Full Name" value="{{ contact.full_name }}">
+          <input type="text" class="type" name="userID" placeholder="userID" value="{{ contact.userID }}">
         </div>
 
-        <div class="info-line">
-          <i class="fas fa-user-circle icon-gradient"></i>
-          <input type="text" class="type" name="relationship" placeholder="Relationship" value="{{ contact.relationship }}">
-        </div>
-
-
-
-        <div class="info-line">
-          <i class="fas fa-sms icon-gradient"></i>
-          <input type="text" class="type" name="phone-number" placeholder="Phone Number" value="{{ contact.phone_number }}">
-        </div>
-
-
-
-        <div  class="info-line">
-          <i class="fas fa-envelope icon-gradient"></i>
-          <input type="text" class="type" name="e-mail" placeholder="Email" value="{{ contact.email }}">
-        </div>
-
-
-
-        <div class="info-line">
-          <i class="fas fa-map-marker-alt icon-gradient location"></i>
-          <input type="text" class="type" name="address" placeholder="Address" value="{{ contact.address }}">
-        </div>
 
       </section>
 

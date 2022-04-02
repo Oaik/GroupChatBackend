@@ -8,6 +8,9 @@ import json
 from .models import RoomMember
 from django.views.decorators.csrf import csrf_exempt
 
+from django.contrib.auth.models import User
+
+
 from django.contrib.auth.views import LoginView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView, FormView
@@ -26,7 +29,7 @@ def index (request) :
     contacts = Contact.objects.all()
     search_input = request.GET.get('search-area')
     if search_input :
-        contacts = Contact.objects.filter(full_name__startswith=search_input)
+        contacts = Contact.objects.filter(pk=search_input)
     else :
         contacts = Contact.objects.all()
         search_input = ''
@@ -35,12 +38,10 @@ def index (request) :
 
 def addContact (request) :
     if request.method == 'POST' :
+        contactUser = User.objects.get(pk=request.POST['userID'])
         new_contact = Contact(
-            full_name =  request.POST['fullname'],
-            relationship = request.POST['relationship'],
-            email = request.POST['email'],
-            phone_number = request.POST['phone-number'],
-            address = request.POST['address']
+            currentUser = request.user,
+            userID = contactUser
         )
         new_contact.save()
         return redirect('/contact-list/')
@@ -48,19 +49,26 @@ def addContact (request) :
 
 def contactProfile (request, pk) :
     contact = Contact.objects.get(id = pk)
-    context = {'contact' : contact}
-    return render(request, 'base/contact-profile.html', context)
 
+    smallID = contact.userID.id
+    bigID = contact.currentUser.id
+
+    if smallID > bigID :
+        tmp = smallID
+        smallID = bigID
+        bigID = tmp
+
+
+    roomName = str(smallID) + ' - ' + str(bigID)
+    context = {'contact' : contact, "roomName": roomName}
+    return render(request, 'base/lobby.html', context)
+#
 
 def editContact(request, pk):
     contact = Contact.objects.get(id=pk)
-
     if request.method == 'POST' :
-        contact.full_name = request.POST['fullname']
-        contact.relationship = request.POST['relationship']
-        contact.phone_number = request.POST['phone-number']
-        contact.email = request.POST['e-mail']
-        contact.address = request.POST['address']
+        contactUser = User.objects.get(pk=request.POST['userID'])
+        contact.userID = contactUser
         contact.save()
 
         return redirect('/profile/'+str(contact.id))
@@ -74,8 +82,6 @@ def deleteContact (request, pk) :
         return redirect('/contact-list/')
     context = {'contact' : contact}
     return render(request, 'base/delete.html', context)
-
-
 
 # user
 class CustomLoginView (LoginView) :
@@ -111,8 +117,9 @@ def getToken (request) :
     # http: // 127.0.0.1: 8000 / get_token /?channel = room1
     # channelName = room1
     channelName = request.GET.get('channel')
+
     # i need to generate random number for the user
-    uid = random.randint(1, 230)
+    uid = request.user.id
     expirationTimeInSeconds = 3600 * 24
     currentTimeStamp = time.time()
     privilegeExpiredTs = currentTimeStamp + expirationTimeInSeconds
@@ -126,6 +133,7 @@ def getToken (request) :
     return JsonResponse({'token' : token, 'uid' : uid}, safe=False)
 
 def lobby (request) :
+
     if not request.user.is_authenticated:
         return render(request, 'base/login.html')
     return render(request, 'base/lobby.html')

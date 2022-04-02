@@ -16,15 +16,11 @@ class RoomMember (models.Model) :
 
 
 class Contact (models.Model) :
-    full_name = models.CharField(max_length=200)
-    relationship = models.CharField(max_length=200)
-    email = models.EmailField()
-    phone_number = models.CharField(max_length=20)
-    address = models.CharField(max_length=200)
-    userID = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=False)
-
+    currentUser = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=False, related_name="User1")
+    userID = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=False, related_name="User2")
+    timeStamp = models.DateTimeField(auto_now_add=True, null=True, blank=False)
     def __str__(self):
-        return self.full_name
+        return str(self.userID.id)
 
 
 
