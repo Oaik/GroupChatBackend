@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from agora_token_builder import RtcTokenBuilder
 import random
 import time
@@ -11,20 +10,57 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 
 
-from django.contrib.auth.views import LoginView
-from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView, DeleteView, CreateView, FormView
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
-
 from base.models import Contact
 
+
+
+from django.contrib import messages
+from .forms import CreateUserForm
+from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth.decorators import login_required
+
+#
 # Create your views here.
+
+# user form
+def registerPage (request) :
+    if request.user.is_authenticated :
+        return redirect('lobby')
+    else :
+        form = CreateUserForm()
+        if request.method == 'POST' :
+            form = CreateUserForm(request.POST)
+            if form.is_valid() :
+                form.save()
+                user = form.cleaned_data.get('username')
+                messages.success(request, 'Account was created for ' + user)
+                return redirect('login')
+
+        context = {'form' : form}
+        return render(request, 'base/registerPage.html', context)
+
+def loginPage (request) :
+    if request.user.is_authenticated :
+        return redirect('lobby')
+    else :
+        if request.method == 'POST' :
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(request, username = username, password = password)
+            if user is not None :
+                login(request, user)
+                return redirect('lobby')
+            else :
+                messages.info(request, 'Username or password is incorrect')
+        return render(request, 'base/loginPage.html')
+
+def logoutPage (request) :
+    logout(request)
+    return render(request, 'base/loginPage.html')
 
 # contact
 
-
+@login_required(login_url='login')
 def index (request) :
     contacts = Contact.objects.all()
     search_input = request.GET.get('search-area')
@@ -36,6 +72,7 @@ def index (request) :
     context = {'contacts' : contacts}
     return render(request, 'base/index.html', context)
 
+@login_required(login_url='login')
 def addContact (request) :
     if request.method == 'POST' :
         contactUser = User.objects.get(pk=request.POST['userID'])
@@ -47,6 +84,7 @@ def addContact (request) :
         return redirect('/contact-list/')
     return render(request, 'base/new.html')
 
+@login_required(login_url='login')
 def contactProfile (request, pk) :
     contact = Contact.objects.get(id = pk)
 
@@ -64,6 +102,7 @@ def contactProfile (request, pk) :
     return render(request, 'base/lobby.html', context)
 #
 
+@login_required(login_url='login')
 def editContact(request, pk):
     contact = Contact.objects.get(id=pk)
     if request.method == 'POST' :
@@ -75,6 +114,7 @@ def editContact(request, pk):
     context = {'contact' : contact}
     return render(request, 'base/edit.html', context)
 
+@login_required(login_url='login')
 def deleteContact (request, pk) :
     contact = Contact.objects.get(id=pk)
     if request.method == 'POST' :
@@ -83,33 +123,6 @@ def deleteContact (request, pk) :
     context = {'contact' : contact}
     return render(request, 'base/delete.html', context)
 
-# user
-class CustomLoginView (LoginView) :
-    template_name = 'base/login.html'
-    fields = '__all__'
-    redirect_authenticated_user = True
-
-    def get_success_url(self):
-        return reverse_lazy('lobby')
-
-
-class RegisterPage (FormView) :
-    template_name = 'base/register.html'
-    form_class = UserCreationForm
-    redirect_authenticated_user = True
-    success_url = reverse_lazy('lobby')
-
-    def form_valid(self, form):
-        user = form.save()
-        if user is not None :
-            login(self.request, user)
-        return super(RegisterPage, self).form_valid(form)
-
-
-    def get (self, *args, **kwargs) :
-        if self.request.user.is_authenticated :
-            return redirect('lobby')
-        return super(RegisterPage, self).get(*args, **kwargs)
 
 def getToken (request) :
     appId = '38e3a9c1018e4d6ca9b60f351d15c7c5'
@@ -132,16 +145,17 @@ def getToken (request) :
     # JsonResponse is an HttpResponse subclass that helps to create a JSON-encoded response.
     return JsonResponse({'token' : token, 'uid' : uid}, safe=False)
 
+@login_required(login_url='login')
 def lobby (request) :
-
     if not request.user.is_authenticated:
-        return render(request, 'base/login.html')
+        return render(request, 'base/loginPage.html')
     return render(request, 'base/lobby.html')
 
 
+@login_required(login_url='login')
 def room (request) :
     if not request.user.is_authenticated:
-        return render(request, 'base/login.html')
+        return render(request, 'base/loginPage.html')
     return render(request, 'base/room.html')
 
 @csrf_exempt

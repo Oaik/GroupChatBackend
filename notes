@@ -12,9 +12,9 @@ connect to pgAdmin -> pip install psycopg2-binary
 
 github command
 1. git add .
-2. git commit -m "msg"
+2. git commit -m "videocall"
 3. git push
 
 
 
-sudo fuser -k 8000/tcp to kill port process
+to kill port process by command " sudo fuser -k 8000/tcp "

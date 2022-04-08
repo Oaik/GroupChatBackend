@@ -13,9 +13,9 @@ urlpatterns = [
 
     # user
 
-    path('login/', views.CustomLoginView.as_view(), name='login'),
-    path('register/', views.RegisterPage.as_view(), name='register'),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('login/', views.loginPage, name='login'),
+    path('register/', views.registerPage, name='register'),
+    path('logout/', views.logoutPage, name='logout'),
 
     # contact
 
