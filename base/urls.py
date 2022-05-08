@@ -1,8 +1,11 @@
 from django.urls import path
 from . import views
+from . import usersView
 from django.contrib.auth.views import LogoutView
 urlpatterns = [
     path('', views.lobby, name='lobby'),
+    path('users', usersView.getUsers),
+
     path('room/', views.room, name='room'),
     path('get_token/', views.getToken),
     path('create_member/', views.createMember),

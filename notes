@@ -6,3 +6,7 @@ then use it inside app views
 to install crispy form " pip install django-crispy-forms "
 then add  'crispy_forms' to installed apps in settings
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+install requests
+pip install requests
+pip install djangorestframework
